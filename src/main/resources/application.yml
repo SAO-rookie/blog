@@ -1,0 +1,10 @@
+spring:
+  profiles:
+    active: dev
+
+mybatis-plus:
+  type-enums-package: com.snowy.blog.commom.emun
+  configuration:
+    # 指定默认枚举类型的类型转换器
+    default-enum-type-handler: com.baomidou.mybatisplus.core.handlers.MybatisEnumTypeHandler
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
