@@ -2,13 +2,14 @@ package com.snowy.blog.service.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.google.common.base.Preconditions;
+import com.snowy.blog.common.enums.InfoJudgment;
+import com.snowy.blog.common.enums.State;
+import com.snowy.blog.common.tools.BeanUtils;
 import com.snowy.blog.entity.DO.ArticleDO;
 import com.snowy.blog.entity.DTO.ArticleDTO;
 import com.snowy.blog.entity.VO.ArticleVO;
 import com.snowy.blog.mapper.ArticleMapper;
 import com.snowy.blog.service.ArticleService;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -21,12 +22,13 @@ import java.util.*;
 public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, ArticleDO> implements ArticleService {
     @Override
     public boolean saveArticleInfo(ArticleDTO articleDTO) {
-        return this.save(dtoToDo(articleDTO));
+        ArticleDO articleDO = BeanUtils.map(articleDTO, ArticleDO.class);
+        return this.save(articleDO);
     }
 
     @Override
     public boolean updateArticleInfoById(ArticleDTO articleDTO) {
-        ArticleDO articleDO = dtoToDo(articleDTO);
+        ArticleDO articleDO = BeanUtils.map(articleDTO, ArticleDO.class);
         articleDO.checkUpdateTime();
         return this.updateById(articleDO);
     }
@@ -34,17 +36,15 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, ArticleDO> im
     @Override
     public ArticleVO getArticleVOById(long id) {
         ArticleDO articleDO = this.getById(id);
-        List<ArticleVO> articleVOS = batchDoToVO(Arrays.asList(articleDO));
-        return articleVOS.size() > 0 ? articleVOS.stream().findFirst().get() : null;
+        return BeanUtils.map(articleDO, ArticleVO.class);
     }
 
     @Override
-    public Page<ArticleVO> pageArticleVO(Page  page) {
-        Page<ArticleDO> doPage = this.lambdaQuery().page(page);
-        Page<ArticleVO> voPage = new Page<>();
-        BeanUtils.copyProperties(doPage,voPage);
-        voPage.setRecords(batchDoToVO(doPage.getRecords()));
-        return voPage;
+    public Page<ArticleVO> pageArticleVOS(Page  page) {
+        Page doPage = this.lambdaQuery().page(page);
+        List list = BeanUtils.mapAsList(doPage.getRecords(), ArticleVO.class);
+        doPage.setRecords(list);
+        return doPage;
     }
 
     @Override
@@ -55,27 +55,16 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, ArticleDO> im
         return this.updateById(articleDO);
     }
 
-    private ArticleDO dtoToDo(ArticleDTO articleDTO){
-        Preconditions.checkNotNull(articleDTO);
-        ArticleDO articleDO = new ArticleDO();
-        BeanUtils.copyProperties(articleDTO,articleDO);
-        return articleDO;
+    @Override
+    public void checkInfoIsExistById(long id, InfoJudgment infoJudgment) {
+        Integer count = lambdaQuery().eq(ArticleDO::getId, id).eq(ArticleDO::getState, State.NOT_DELETE).count();
+        InfoJudgment.handlerInfoJudgment(count,infoJudgment,"文章");
     }
 
-    private List<ArticleVO> batchDoToVO(List<ArticleDO> articleDOS){
-        Preconditions.checkNotNull(articleDOS);
-        if (articleDOS.isEmpty()){
-            return Collections.emptyList();
-        }
-        List<ArticleVO> list = new ArrayList<>();
-        for (ArticleDO articleDO : articleDOS) {
-            if (Objects.nonNull(articleDO)){
-                ArticleVO articleVO = new ArticleVO();
-                BeanUtils.copyProperties(articleDO,articleVO);
-                list.add(articleVO);
-            }
-        }
-        return list;
+    @Override
+    public void checkInfoIsExistByCategoryId(long categoryId, InfoJudgment infoJudgment) {
+        Integer count = lambdaQuery().eq(ArticleDO::getCategoryId, categoryId).eq(ArticleDO::getState, State.NOT_DELETE).count();
+        InfoJudgment.handlerInfoJudgment(count,infoJudgment,"文章");
     }
 
 }

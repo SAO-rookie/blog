@@ -2,7 +2,7 @@ package com.snowy.blog.entity.DTO;
 
 import com.snowy.blog.common.annotationp.First;
 import com.snowy.blog.common.annotationp.Second;
-import com.snowy.blog.common.emun.State;
+import lombok.Data;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
@@ -16,6 +16,7 @@ import javax.validation.constraints.Null;
  *  Second 代表 修改
  */
 
+@Data
 public class ArticleDTO {
     @Null(groups = {First.class})
     @NotNull(groups = {Second.class})
@@ -32,54 +33,6 @@ public class ArticleDTO {
 
     private String content;
 
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public Long getAuthorId() {
-        return authorId;
-    }
-
-    public void setAuthorId(Long authorId) {
-        this.authorId = authorId;
-    }
-
-    public Long getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(Long categoryId) {
-        this.categoryId = categoryId;
-    }
-
-    public String getIntroduction() {
-        return introduction;
-    }
-
-    public void setIntroduction(String introduction) {
-        this.introduction = introduction;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
 
 }
 

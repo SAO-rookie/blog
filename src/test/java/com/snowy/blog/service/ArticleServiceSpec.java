@@ -1,8 +1,9 @@
 package com.snowy.blog.service;
 
+
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.snowy.blog.BlogApplication;
-import com.snowy.blog.entity.DO.ArticleDO;
+import com.snowy.blog.common.enums.InfoJudgment;
 import com.snowy.blog.entity.DTO.ArticleDTO;
 import com.snowy.blog.entity.VO.ArticleVO;
 import org.junit.Assert;
@@ -11,11 +12,8 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.core.AutoConfigureCache;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author snowy
@@ -66,7 +64,7 @@ public class ArticleServiceSpec {
 
     @Test
     public void  whenUserPageQueryCantNotNull(){
-        Page<ArticleVO> articleVO = articleService.pageArticleVO(new Page<>(2,5));
+        Page<ArticleVO> articleVO = articleService.pageArticleVOS(new Page<>(1,5));
         Assert.assertTrue(articleVO.getRecords().size() > 0);
     }
 
@@ -82,4 +80,18 @@ public class ArticleServiceSpec {
         articleService.removeById(1465322688180600834L);
         Assert.assertNull(articleService.getById(1465322688180600834L));
     }
+
+    @Test
+    public void checkArticleInfoIsNullThenException(){
+        exception.expect(RuntimeException.class);
+        articleService.checkInfoIsExistById(14631564081072701L, InfoJudgment.NOT_EXIST);
+    }
+
+    @Test
+    public void checkArticleInfoNotNullThenException(){
+        exception.expect(RuntimeException.class);
+        articleService.checkInfoIsExistById(1463156408107270146L, InfoJudgment.EXIST);
+    }
+
+
 }

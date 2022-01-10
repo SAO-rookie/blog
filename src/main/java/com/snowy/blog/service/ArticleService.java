@@ -2,6 +2,7 @@ package com.snowy.blog.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.snowy.blog.common.enums.InfoJudgment;
 import com.snowy.blog.entity.DO.ArticleDO;
 import com.snowy.blog.entity.DTO.ArticleDTO;
 import com.snowy.blog.entity.VO.ArticleVO;
@@ -17,7 +18,11 @@ public interface ArticleService extends IService<ArticleDO> {
 
     ArticleVO getArticleVOById(long id);
 
-    Page<ArticleVO> pageArticleVO(Page page);
+    Page<ArticleVO> pageArticleVOS(Page page);
 
     boolean logicDeleteById(long id);
+
+    void checkInfoIsExistById(long id, InfoJudgment infoJudgment);
+
+    void checkInfoIsExistByCategoryId(long categoryId, InfoJudgment infoJudgment);
 }

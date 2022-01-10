@@ -1,4 +1,4 @@
-package com.snowy.blog.common.emun;
+package com.snowy.blog.common.enums;
 
 import com.baomidou.mybatisplus.annotation.EnumValue;
 import com.google.common.base.Preconditions;
